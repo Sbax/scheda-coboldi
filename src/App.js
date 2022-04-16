@@ -33,10 +33,22 @@ const App = () => {
     setCharacter(character);
   }
 
+  const print = () => {
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(character));
+    const dlAnchorElem = document.createElement("a");
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", "character.json");
+    dlAnchorElem.click();
+
+    window.print();
+  };
+
   return (
     <>
       <header className="no-print header">
-        <button onClick={window.print}>Stampa</button>
+        <button onClick={print}>Stampa</button>
       </header>
       <div className="app-holder">
         {statsSheet}
