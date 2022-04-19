@@ -284,11 +284,26 @@ const App = () => {
     updateCharacter(char);
   };
 
+  const importFile = ({ target }) => {
+    try {
+      const fileread = new FileReader();
+      fileread.onload = (e) => {
+        const content = e.target.result;
+        const character = JSON.parse(content);
+        updateCharacter(character);
+      };
+      fileread.readAsText(target.files[0]);
+    } catch {
+      console.error("File errored");
+    }
+  };
+
   return (
     <>
       <header className="no-print header">
         <button onClick={print}>Stampa</button>
         <button onClick={setDefault}>Calcola</button>
+        <input type="file" name="file" accept=".json" onChange={importFile} />
       </header>
       <div className="app-holder">
         {statsSheet}
