@@ -1,0 +1,30 @@
+.home {
+  max-width: 1024px;
+  margin: auto;
+
+  display: flex;
+  flex-direction: column;
+
+  .site {
+    margin: auto;
+    padding: 1rem;
+    padding-left: 5rem;
+    font-size: 1.5em;
+  }
+
+  th,
+  td {
+    padding: 0.5em;
+  }
+
+  .image {
+    max-width: 20em;
+    margin: auto;
+  }
+
+  > * + * {
+    margin-top: 1em;
+  }
+
+  padding: 1em;
+}

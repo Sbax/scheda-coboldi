@@ -1,16 +1,22 @@
-import "bootstrap/dist/css/bootstrap.css";
 import {
   DnDCharacterSpellSheet,
   DnDCharacterStatsSheet,
 } from "dnd-character-sheets";
-import React, { useState } from "react";
-import "./App.css";
+import React, { useRef, useState } from "react";
+import { Link, useRoute } from "wouter";
+import Button from "../../components/button/button";
+import "./sheet.scss";
 
-const App = () => {
-  const [character, setCharacter] = useState({});
+const Sheet = () => {
+  const [match, params] = useRoute("/sheet/:id");
+
+  const [character, updateCharacter] = useState(
+    params && params.id ? require(`../../characters/${params.id}`) : {}
+  );
+  const uploader = useRef(null);
 
   const Title = (
-    <img alt="Logo" className="image" src="./officina_coboldi_black_text.svg" />
+    <img alt="Logo" className="image" src="/officina_coboldi_black_text.svg" />
   );
 
   const statsSheet = (
@@ -28,30 +34,6 @@ const App = () => {
       title={Title}
     />
   );
-
-  function updateCharacter(character) {
-    setCharacter(character);
-  }
-
-  const print = () => {
-    const dataStr =
-      "data:text/json;charset=utf-8," +
-      encodeURIComponent(JSON.stringify(character));
-    const dlAnchorElem = document.createElement("a");
-    dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", "character.json");
-    dlAnchorElem.click();
-
-    window.print();
-  };
-
-  const formatResult = (value) => {
-    if (value > 0) {
-      return `+${value}`;
-    }
-
-    return `${value}`;
-  };
 
   const getModifier = (stat) => Math.floor((Number(stat) - 10) / 2);
 
@@ -84,8 +66,6 @@ const App = () => {
     const intMod = getModifier(int);
     const wisMod = getModifier(wis);
     const chaMod = getModifier(cha);
-
-    console.log({ strMod, dexMod, conMod, intMod, wisMod, chaMod });
 
     if (str || str === 0) {
       if (strSaveChecked) {
@@ -285,6 +265,8 @@ const App = () => {
   };
 
   const importFile = ({ target }) => {
+    if (!target) return;
+
     try {
       const fileread = new FileReader();
       fileread.onload = (e) => {
@@ -293,25 +275,67 @@ const App = () => {
         updateCharacter(character);
       };
       fileread.readAsText(target.files[0]);
-    } catch {
-      console.error("File errored");
+    } catch (error) {
+      console.error("File errored", error);
     }
   };
 
+  const formatResult = (value) => (value > 0 ? `+${value}` : `${value}`);
+  const print = () => window.print();
+  const load = () => uploader.current.click();
+
+  const getFileName = () => {
+    const fileName = [];
+    if (character.name) {
+      fileName.push(character.name);
+    }
+
+    if (character.classLevel) {
+      fileName.push(character.classLevel);
+    }
+
+    return fileName.length ? fileName.join(" - ") : "character";
+  };
+
+  const download = () => {
+    const dataStr =
+      "data:text/json;charset=utf-8," +
+      encodeURIComponent(JSON.stringify(character));
+    const dlAnchorElem = document.createElement("a");
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", getFileName() + ".json");
+    dlAnchorElem.click();
+  };
+
   return (
-    <>
-      <header className="no-print header">
-        <button onClick={print}>Stampa</button>
-        <button onClick={setDefault}>Calcola</button>
-        <input type="file" name="file" accept=".json" onChange={importFile} />
-      </header>
+    <main className="dnd-sheet">
+      <div className="no-print header">
+        <Link href="/">
+          <Button>Torna alla home</Button>
+        </Link>
+      </div>
+      <div className="no-print header">
+        <Button onClick={setDefault}>Calcola Tiri Salvezza e Abilità</Button>
+        <Button onClick={print}>Stampa</Button>
+
+        <Button onClick={load}>Inserisci File</Button>
+        <Button onClick={download}>Scarica File</Button>
+        <input
+          style={{ display: "none" }}
+          ref={uploader}
+          type="file"
+          name="file"
+          accept=".json"
+          onChange={importFile}
+        />
+      </div>
       <div className="app-holder">
         {statsSheet}
         <div className="page-break" />
         {spellSheet}
       </div>
-    </>
+    </main>
   );
 };
 
-export default App;
+export default Sheet;

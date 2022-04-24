@@ -1,0 +1,23 @@
+@import 'components/styles/variables.scss';
+
+body {
+  margin: 0;
+  padding: 0;
+
+  background: $main-bg;
+
+  font-family: 'Montserrat';
+  font-weight: 600;
+
+  color: black;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+
+  &:hover {
+    color: inherit;
+    text-decoration: none;
+  }
+}

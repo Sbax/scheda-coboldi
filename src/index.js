@@ -1,13 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import "bootstrap/dist/css/bootstrap.css";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Route, Switch } from "wouter";
+import "./index.scss";
+import Home from "./pages/home/home";
+import Sheet from "./pages/sheet/sheet";
+import reportWebVitals from "./reportWebVitals";
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <Switch>
+      <Route path="/">
+        <Home />
+      </Route>
+      <Route path="/sheet">
+        <Sheet />
+      </Route>
+      <Route path="/sheet/:id">
+        <Sheet />
+      </Route>
+    </Switch>
   </React.StrictMode>
 );
 
