@@ -11,7 +11,7 @@ const Sheet = () => {
   const [match, params] = useRoute("/sheet/:id");
 
   const [character, updateCharacter] = useState(
-    params && params.id ? require(`../../characters/${params.id}`) : {}
+    match && params && params.id ? require(`../../characters/${params.id}`) : {}
   );
   const uploader = useRef(null);
 
